@@ -38,7 +38,7 @@ arguments:
       hint: 'See <a href="https://albumentations.ai/docs/api_reference/augmentations/transforms/" target="_blank">documentation</a> for more information on parameters.'
       
     - name: cvat-model
-      value: frcnn-res50-coco
+      value: ssd-mobilenet-v2-coco
       displayName: Model
       hint: TF Detection API's model to use for training.
       type: select.select
@@ -60,14 +60,18 @@ arguments:
           value: ssdlite-mobilenet-coco
 
     - name: cvat-num-classes
-      value: '10'
+      value: '1'
       hint: Number of classes. In CVAT, this parameter will be pre-populated.
       displayName: Number of classes
       visibility: internal
 
     - name: hyperparameters
       value: |-
-        num_steps: 10000
+        num_clones: 1
+        batch_size: 2
+        num_steps: 400000
+        num_classes: 1
+        initial_learning_rate: 0.004
       displayName: Hyperparameters
       visibility: public
       type: textarea.textarea
@@ -167,8 +171,8 @@ templates:
           name: src
           path: /mnt/src/tf
         - git:
-            repo: https://github.com/onepanelio/templates.git
-            revision: v0.18.0
+            repo: https://github.com/hsgBlueSmoke/templates.git
+            revision: v1
           name: tsrc
           path: /mnt/src/train
     name: tensorflow
@@ -222,8 +226,8 @@ templates:
           s3:
             key: '{{workflow.parameters.cvat-annotation-path}}'
         - git:
-            repo: https://github.com/onepanelio/templates.git
-            revision: v0.18.0
+            repo: https://github.com/hsgBlueSmoke/templates.git
+            revision: v1
           name: src
           path: /mnt/src/preprocessing
     name: preprocessing
